@@ -1,0 +1,24 @@
+# Build folders
+Debug/
+Release/
+
+# IDE local settings
+.settings/
+
+# Temporary files
+*.o
+*.d
+*.su
+
+# What is "Important"?
+# In an STM32 project, "important" means the files required to rebuild the project from scratch.
+# CategoryFiles     |       Folders to Keep         |         Why?
+# Source Code       |       Src/, Inc/, drivers/    |    This is your actual logic and peripheral drivers.
+# Configuration     |       .project/, .cproject/   |    These tell the IDE how to build your project.
+# Hardware          |       Startup/, *.ld          |    Linker scripts and assembly startup files for the MCU.
+# IOC File          |       *.ioc (if present)      |    The STM32CubeMX configuration file.
+
+
+# What to Ignore?
+# Debug/ or Release/: These contain .elf, .bin, and .o files generated during compilation.
+# .settings/: Contains your personal IDE preferences (like theme or local toolchain paths).
