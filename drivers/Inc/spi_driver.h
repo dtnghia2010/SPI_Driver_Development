@@ -110,6 +110,11 @@ void SPI_DeInint(SPIx_Type *pSPIx);
 void SPI_PeripheralControl(SPIx_Type* pSPIx, uint8_t EnorDis);
 
 /**
+ * SSI configuration
+ */
+void SPI_SSIConfig(SPIx_Type* pSPIx, uint8_t EnorDis);
+
+/**
  * Data Send and Receive
  */
 void SPI_SendData(SPIx_Type* pSPIx, uint8_t *pTxBuff, uint32_t len);

@@ -59,7 +59,7 @@ void SPI2_Init()
 {
   SPIx_Handle_t SPI2Handler;
 
-  SPI2Handler.pSPIx = SPI2;
+  SPI2Handler.pSPIx = SPI6;
 	SPI2Handler.SPIConfig.SPI_DeviceMode  = SPI_DEVICE_MODE_MASTER;
 	SPI2Handler.SPIConfig.SPI_BusConfig   = SPI_BUS_CONFIG_FD;
 	SPI2Handler.SPIConfig.SPI_SclkSpeed   = SPI_SCLK_SPEED_DIV2;
@@ -79,9 +79,11 @@ int main(void)
 
   SPI2_Init();
 
-  SPI_PeripheralControl(SPI2, ENABLE);
+  SPI_SSIConfig(SPI6, ENABLE);
 
-  SPI_SendData(SPI2, (uint8_t *) user_data, strlen(user_data));
+  SPI_PeripheralControl(SPI6, ENABLE);
+
+  SPI_SendData(SPI6, (uint8_t *) user_data, strlen(user_data));
 
   while(1);
 

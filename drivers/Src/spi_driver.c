@@ -59,6 +59,10 @@ void SPI_PclkCtrl(SPIx_Type* pSPIx, uint8_t EnorDis)
  */
 void SPI_Init(SPIx_Handle_t *pSPIHandle)
 {
+
+    // Enable SPI peripheral clock
+    SPI_PclkCtrl(pSPIHandle->pSPIx, ENABLE);
+
     uint32_t SPI_Reg = 0;
 
     // 1. Config device mode
@@ -96,10 +100,6 @@ void SPI_Init(SPIx_Handle_t *pSPIHandle)
     SPI_Reg |= (pSPIHandle->SPIConfig.SPI_SSM << SPI_CR1_SSM_Pos);
 
     pSPIHandle->pSPIx->CR1 = SPI_Reg;
-
-    // Enable SPI peripheral clock
-    SPI_PclkCtrl(pSPIHandle->pSPIx, ENABLE);
-
 }
 
 void SPI_DeInint(SPIx_Type *pSPIx)
@@ -145,6 +145,21 @@ void SPI_PeripheralControl(SPIx_Type* pSPIx, uint8_t EnorDis)
     else
     {
         pSPIx->CR1 &= ~(SPI_CR1_SPE_Msk << SPI_CR1_SPE_Pos);
+    }
+}
+
+/**
+ * SSI configuration
+ */
+void SPI_SSIConfig(SPIx_Type* pSPIx, uint8_t EnorDis)
+{
+    if(EnorDis == ENABLE)
+    {
+        pSPIx->CR1 |= (SPI_CR1_SSI_Msk << SPI_CR1_SSI_Pos);
+    }
+    else
+    {
+        pSPIx->CR1 &= ~(SPI_CR1_SSI_Msk << SPI_CR1_SSI_Pos);
     }
 }
 
