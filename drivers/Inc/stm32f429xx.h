@@ -12,6 +12,10 @@
 #include <stdint.h>
 #define __vo 					volatile
 
+/*
+ *	Macros for reset register GPIOs
+ */
+
 #define GPIOA_REG_RESET()		do {(RCC->AHB1RSTR |= (1 << 0)); (RCC->AHB1RSTR &= ~(1 << 0));} while(0)
 #define GPIOB_REG_RESET()		do {(RCC->AHB1RSTR |= (1 << 1)); (RCC->AHB1RSTR &= ~(1 << 1));} while(0)
 #define GPIOC_REG_RESET()		do {(RCC->AHB1RSTR |= (1 << 2)); (RCC->AHB1RSTR &= ~(1 << 2));} while(0)
@@ -23,8 +27,8 @@
 #define GPIOI_REG_RESET()		do {(RCC->AHB1RSTR |= (1 << 8)); (RCC->AHB1RSTR &= ~(1 << 8));} while(0)
 
 /*
-	macros for all the possible priority levels
-*/
+ *	macros for all the possible priority levels
+ */
 
 #define NVIC_IRQ_PRIO0	0
 #define NVIC_IRQ_PRIO15	15
@@ -317,10 +321,10 @@ typedef struct
 
 
 
-#include <Inc/gpio_driver.h>
-#include <Inc/i2c_driver.h>
-#include <Inc/spi_driver.h>
-#include <Inc/uart_driver.h>
+#include <gpio_driver.h>
+#include <i2c_driver.h>
+#include <spi_driver.h>
+#include <uart_driver.h>
 
 
 #endif /* INC_STM32F429XX_H_ */

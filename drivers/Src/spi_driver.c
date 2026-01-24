@@ -7,6 +7,7 @@
 
 
 #include "spi_driver.h"
+#include "stm32f429xx.h"
 
 
 /***********************************************************************************
@@ -19,7 +20,37 @@
  */
 void SPI_PclkCtrl(SPIx_Type* pSPIx, uint8_t EnorDis)
 {
+	if (EnorDis == ENABLE)
+	{
+		if(pSPIx == SPI1)
+		{
+			SPI1_PCLK_EN();
+		}
+		else if (pSPIx == SPI2)
+		{
+			SPI2_PCLK_EN();
+		}
+		else if (pSPIx == SPI3)
+		{
+			SPI3_PCLK_EN();
+		}
+		else if (pSPIx == SPI4)
+		{
+			SPI4_PCLK_EN();
+		}
+		else if (pSPIx == SPI5)
+		{
+			SPI5_PCLK_EN();
+		}
+		else if (pSPIx == SPI6)
+		{
+			SPI6_PCLK_EN();
+		}
+	}
+	else
+	{
 
+	}
 }
 
 
@@ -33,7 +64,45 @@ void SPI_Init(SPIx_Handle_t *pSPIHandle)
 
 void SPI_DeInint(SPIx_Type *pSPIx)
 {
-
+	if (1)
+	{
+		if(pGPIOx == GPIOA)
+		{
+			GPIOA_REG_RESET();
+		}
+		else if (pGPIOx == GPIOB)
+		{
+			GPIOB_REG_RESET();
+		}
+		else if (pGPIOx == GPIOC)
+		{
+			GPIOC_REG_RESET();
+		}
+		else if (pGPIOx == GPIOD)
+		{
+			GPIOD_REG_RESET();
+		}
+		else if (pGPIOx == GPIOE)
+		{
+			GPIOE_REG_RESET();
+		}
+		else if (pGPIOx == GPIOF)
+		{
+			GPIOF_REG_RESET();
+		}
+		else if (pGPIOx == GPIOG)
+		{
+			GPIOG_REG_RESET();
+		}
+		else if (pGPIOx == GPIOH)
+		{
+			GPIOH_REG_RESET();
+		}
+		else if (pGPIOx == GPIOI)
+		{
+			GPIOI_REG_RESET();
+		}
+	}
 }
 
 /*
@@ -67,5 +136,3 @@ void SPI_IRQHandling(SPIx_Handle_t *pSPIHandle)
 {
 
 }
-
-
