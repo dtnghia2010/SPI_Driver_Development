@@ -1,4 +1,4 @@
-/*
+/**
  * spi_driver.c
  *
  *  Created on: Dec 16, 2025
@@ -10,12 +10,12 @@
 #include "stm32f429xx.h"
 
 
-/***********************************************************************************
+/************************************************************************************
  * 							APIs supported by this driver
  * 			For more information about the APIs check the function definitions
  ************************************************************************************/
 
-/*
+/**
  * SPI Clock Control
  */
 void SPI_PclkCtrl(SPIx_Type* pSPIx, uint8_t EnorDis)
@@ -54,11 +54,48 @@ void SPI_PclkCtrl(SPIx_Type* pSPIx, uint8_t EnorDis)
 }
 
 
-/*
+/**
  * SPI Initialization and De-initialization
  */
 void SPI_Init(SPIx_Handle_t *pSPIHandle)
 {
+    uint32_t SPI_Reg = 0;
+
+    // 1. Config device mode
+    SPI_Reg |= (pSPIHandle->SPIConfig.SPI_DeviceMode << 2U);
+
+    // 2. Config the bug config
+    if(pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_FD)
+    {
+        SPI_Reg &= ~(SPI_CR1_BIDIMODE_Msk << SPI_CR1_BIDIMODE_Pos);
+        SPI_Reg &= ~(SPI_CR1_RXONLY_Msk << SPI_CR1_RXONLY_Pos);
+    }
+    else if (pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_HD)
+    {
+        SPI_Reg |= (SPI_CR1_BIDIMODE_Msk << SPI_CR1_BIDIMODE_Pos);
+    }
+    else if (pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_SP_RXONLY)
+    {
+        SPI_Reg &= ~(SPI_CR1_BIDIMODE_Msk << SPI_CR1_BIDIMODE_Pos);
+        SPI_Reg |= (SPI_CR1_RXONLY_Msk << SPI_CR1_RXONLY_Pos);
+    }
+
+    // 3. Config serial clock
+    SPI_Reg |= (pSPIHandle->SPIConfig.SPI_SclkSpeed << SPI_CR1_BR_Pos);
+
+    // 4. Config DFF
+    SPI_Reg |= (pSPIHandle->SPIConfig.SPI_DFF << SPI_CR1_DFF_Pos);
+
+    // 5. Config clock polarity
+    SPI_Reg |= (pSPIHandle->SPIConfig.SPI_CPOL << SPI_CR1_CPOL_Pos);
+
+    // 6. Config clock phase
+    SPI_Reg |= (pSPIHandle->SPIConfig.SPI_CPHA << SPI_CR1_CPHA_Pos);
+
+    // 7. Config software slave management
+    SPI_Reg |= (pSPIHandle->SPIConfig.SPI_SSM << SPI_CR1_SSM_Pos);
+
+    pSPIHandle->pSPIx->CR1 = SPI_Reg;
 
 }
 
@@ -66,51 +103,71 @@ void SPI_DeInint(SPIx_Type *pSPIx)
 {
 	if (1)
 	{
-		if(pGPIOx == GPIOA)
+		if(pSPIx == SPI1)
 		{
 			GPIOA_REG_RESET();
 		}
-		else if (pGPIOx == GPIOB)
+		else if (pSPIx == SPI2)
 		{
 			GPIOB_REG_RESET();
 		}
-		else if (pGPIOx == GPIOC)
+		else if (pSPIx == SPI3)
 		{
 			GPIOC_REG_RESET();
 		}
-		else if (pGPIOx == GPIOD)
+		else if (pSPIx == SPI4)
 		{
 			GPIOD_REG_RESET();
 		}
-		else if (pGPIOx == GPIOE)
+		else if (pSPIx == SPI5)
 		{
 			GPIOE_REG_RESET();
 		}
-		else if (pGPIOx == GPIOF)
+		else if (pSPIx == SPI6)
 		{
 			GPIOF_REG_RESET();
-		}
-		else if (pGPIOx == GPIOG)
-		{
-			GPIOG_REG_RESET();
-		}
-		else if (pGPIOx == GPIOH)
-		{
-			GPIOH_REG_RESET();
-		}
-		else if (pGPIOx == GPIOI)
-		{
-			GPIOI_REG_RESET();
 		}
 	}
 }
 
-/*
+uint8_t SPI_GetFlagStatus(SPIx_Type* pSPIx, uint8_t FLAG_NAME)
+{
+    if(pSPIx->SR & FLAG_NAME)
+    {
+        return FLAG_SET;
+    }
+    return FLAG_RESET;
+}
+
+/**
  * Data Send and Receive
  */
 void SPI_SenDatad(SPIx_Type* pSPIx, uint8_t *pTxBuff, uint32_t len)
 {
+    while(len > 0)
+    {
+        // 1. Wait until TXE is set
+        while(SPI_GetFlagStatus(pSPIx, SPI_TXE_FLAG) == FLAG_RESET);
 
+        // 2. Check the DFF bit in CR1
+        if(pSPIx->CR1 & (SPI_CR1_DFF_Msk << SPI_CR1_DFF_Pos))
+        {
+            // 16 bit DFF
+            //a. Load the data into the DR
+            pSPIx->DR = *((uint16_t *)pTxBuff);
+            len--;
+            len--;
+            (uint16_t *)pTxBuff++;
+        }
+        else
+        {
+            // 16 bit DFF
+            //a. Load the data into the DR
+            pSPIx->DR = *(pTxBuff);
+            len--;
+            pTxBuff++;
+        }
+    }
 }
 
 void SPI_ReceiveData(SPIx_Type* pSPIx, uint8_t *pRxBuff, uint32_t len)
@@ -119,7 +176,7 @@ void SPI_ReceiveData(SPIx_Type* pSPIx, uint8_t *pRxBuff, uint32_t len)
 }
 
 
-/*
+/**
  * SPI Interrupt Configuration
  */
 void SPI_IRQInteruptConfig(uint8_t IRQNumber, uint8_t EnorDis)

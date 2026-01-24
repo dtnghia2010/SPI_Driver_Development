@@ -19,9 +19,15 @@
 
 #include <stdint.h>
 #include "spi_driver.h"
-#if !defined(__SOFT_FP__) && defined(__ARM_FP)
-  #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
-#endif
+// #if !defined(__SOFT_FP__) && defined(__ARM_FP)
+//   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
+// #endif
+
+
+// SPI6_NSS   -   PG8   -   AF05
+// SPI6_MISO  -   PG12  -   AF05
+// SPI6_MOSI  -   PG14  -   AF05
+// SPI6_CLK   -   PG13  -   AF05
 
 int main(void)
 {

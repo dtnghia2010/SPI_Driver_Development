@@ -13,7 +13,7 @@
 #define __vo 					volatile
 
 /*
- *	Macros for reset register GPIOs
+ *	Macros for reset register GPIOx
  */
 
 #define GPIOA_REG_RESET()		do {(RCC->AHB1RSTR |= (1 << 0)); (RCC->AHB1RSTR &= ~(1 << 0));} while(0)
@@ -25,6 +25,19 @@
 #define GPIOG_REG_RESET()		do {(RCC->AHB1RSTR |= (1 << 6)); (RCC->AHB1RSTR &= ~(1 << 6));} while(0)
 #define GPIOH_REG_RESET()		do {(RCC->AHB1RSTR |= (1 << 7)); (RCC->AHB1RSTR &= ~(1 << 7));} while(0)
 #define GPIOI_REG_RESET()		do {(RCC->AHB1RSTR |= (1 << 8)); (RCC->AHB1RSTR &= ~(1 << 8));} while(0)
+
+
+/*
+ *	Macros for reset register SPIx
+ */
+
+#define SPI1_REG_RESET()		do {(RCC->APB2RSTR |= (1 << 12)); (RCC->APB2RSTR &= ~(1 << 12));} while(0)
+#define SPI2_REG_RESET()		do {(RCC->APB1RSTR |= (1 << 14)); (RCC->APB1RSTR &= ~(1 << 14));} while(0)
+#define SPI3_REG_RESET()		do {(RCC->APB1RSTR |= (1 << 15)); (RCC->APB1RSTR &= ~(1 << 15));} while(0)
+#define SPI4_REG_RESET()		do {(RCC->APB2RSTR |= (1 << 13)); (RCC->APB2RSTR &= ~(1 << 13));} while(0)
+#define SPI5_REG_RESET()		do {(RCC->APB2RSTR |= (1 << 20)); (RCC->APB2RSTR &= ~(1 << 20));} while(0)
+#define SPI6_REG_RESET()		do {(RCC->APB2RSTR |= (1 << 21)); (RCC->APB2RSTR &= ~(1 << 21));} while(0)
+
 
 /*
  *	macros for all the possible priority levels
@@ -38,6 +51,8 @@
 #define DISABLE 				0
 #define SET 					ENABLE
 #define RESET					DISABLE
+#define FLAG_SET				ENABLE
+#define FLAG_RESET				DISABLE
 #define GPIO_PIN_SET			SET
 #define GPIO_PIN_RESET			RESET
 #define FLASH_BASEADDR			0x08000000U
@@ -46,6 +61,94 @@
 #define ROM						0x1FFF0000U
 #define SRAM 					SRAM1_BASEADDR
 
+
+/*
+ * Bit position definitions for SPI_CR1
+ */
+#define SPI_CR1_CPHA_Pos           (0U)
+#define SPI_CR1_CPOL_Pos           (1U)
+#define SPI_CR1_MSTR_Pos           (2U)
+#define SPI_CR1_BR_Pos             (3U)
+#define SPI_CR1_SPE_Pos            (6U)
+#define SPI_CR1_LSBFIRST_Pos       (7U)
+#define SPI_CR1_SSI_Pos            (8U)
+#define SPI_CR1_SSM_Pos            (9U)
+#define SPI_CR1_RXONLY_Pos         (10U)
+#define SPI_CR1_DFF_Pos            (11U)
+#define SPI_CR1_CRCNEXT_Pos        (12U)
+#define SPI_CR1_CRCEN_Pos          (13U)
+#define SPI_CR1_BIDIOE_Pos         (14U)
+#define SPI_CR1_BIDIMODE_Pos       (15U)
+
+/*
+ * Bit mask definitions for SPI_CR1
+ */
+#define SPI_CR1_CPHA_Msk           (0x1U)
+#define SPI_CR1_CPOL_Msk           (0x1U)
+#define SPI_CR1_MSTR_Msk           (0x1U)
+#define SPI_CR1_BR_Msk             (0x7U)
+#define SPI_CR1_SPE_Msk            (0x1U)
+#define SPI_CR1_LSBFIRST_Msk       (0x1U)
+#define SPI_CR1_SSI_Msk            (0x1U)
+#define SPI_CR1_SSM_Msk            (0x1U)
+#define SPI_CR1_RXONLY_Msk         (0x1U)
+#define SPI_CR1_DFF_Msk            (0x1U)
+#define SPI_CR1_CRCNEXT_Msk        (0x1U)
+#define SPI_CR1_CRCEN_Msk          (0x1U)
+#define SPI_CR1_BIDIOE_Msk         (0x1U)
+#define SPI_CR1_BIDIMODE_Msk       (0x1U)
+
+/* Bit position definitions for SPI_CR2 */
+#define SPI_CR2_RXDMAEN_Pos        (0U)
+#define SPI_CR2_TXDMAEN_Pos        (1U)
+#define SPI_CR2_SSOE_Pos           (2U)
+#define SPI_CR2_FRF_Pos            (4U)
+#define SPI_CR2_ERRIE_Pos          (5U)
+#define SPI_CR2_RXNEIE_Pos         (6U)
+#define SPI_CR2_TXEIE_Pos          (7U)
+
+/* Bit mask definitions for SPI_CR2 */
+#define SPI_CR2_RXDMAEN_Msk        (0x1U << SPI_CR2_RXDMAEN_Pos)
+#define SPI_CR2_TXDMAEN_Msk        (0x1U << SPI_CR2_TXDMAEN_Pos)
+#define SPI_CR2_SSOE_Msk           (0x1U << SPI_CR2_SSOE_Pos)
+#define SPI_CR2_FRF_Msk            (0x1U << SPI_CR2_FRF_Pos)
+#define SPI_CR2_ERRIE_Msk          (0x1U << SPI_CR2_ERRIE_Pos)
+#define SPI_CR2_RXNEIE_Msk         (0x1U << SPI_CR2_RXNEIE_Pos)
+#define SPI_CR2_TXEIE_Msk          (0x1U << SPI_CR2_TXEIE_Pos)
+
+
+/* Bit position definitions for SPI_SR */
+#define SPI_SR_RXNE_Pos            (0U)   // Receive buffer not empty
+#define SPI_SR_TXE_Pos             (1U)   // Transmit buffer empty
+#define SPI_SR_CHSIDE_Pos          (2U)   // Channel side (I2S mode)
+#define SPI_SR_UDR_Pos             (3U)   // Underrun flag
+#define SPI_SR_CRCERR_Pos          (4U)   // CRC error flag
+#define SPI_SR_MODF_Pos            (5U)   // Mode fault
+#define SPI_SR_OVR_Pos             (6U)   // Overrun flag
+#define SPI_SR_BSY_Pos             (7U)   // Busy flag
+#define SPI_SR_FRE_Pos             (8U)   // Frame format error
+
+/* Bit mask definitions for SPI_SR */
+#define SPI_SR_RXNE_Msk            (0x1U << SPI_SR_RXNE_Pos)
+#define SPI_SR_TXE_Msk             (0x1U << SPI_SR_TXE_Pos)
+#define SPI_SR_CHSIDE_Msk          (0x1U << SPI_SR_CHSIDE_Pos)
+#define SPI_SR_UDR_Msk             (0x1U << SPI_SR_UDR_Pos)
+#define SPI_SR_CRCERR_Msk          (0x1U << SPI_SR_CRCERR_Pos)
+#define SPI_SR_MODF_Msk            (0x1U << SPI_SR_MODF_Pos)
+#define SPI_SR_OVR_Msk             (0x1U << SPI_SR_OVR_Pos)
+#define SPI_SR_BSY_Msk             (0x1U << SPI_SR_BSY_Pos)
+#define SPI_SR_FRE_Msk             (0x1U << SPI_SR_FRE_Pos)
+
+/* SPI Flags */
+#define SPI_RXNE_FLAG            (SPI_SR_RXNE_Msk << SPI_SR_RXNE_Pos)   // Receive buffer not empty
+#define SPI_TXE_FLAG             (SPI_SR_TXE_Msk << SPI_SR_TXE_Pos)   // Transmit buffer empty
+#define SPI_CHSIDE_FLAG          (SPI_SR_CHSIDE_Msk << SPI_SR_CHSIDE_Pos)   // Channel side (I2S mode)
+#define SPI_UDR_FLAG             (SPI_SR_UDR_Msk << SPI_SR_UDR_Pos)   // Underrun flag
+#define SPI_CRCERR_FLAG          (SPI_SR_CRCERR_Msk << SPI_SR_CRCERR_Pos)   // CRC error flag
+#define SPI_MODF_FLAG            (SPI_SR_MODF_Msk << SPI_SR_MODF_Pos)   // Mode fault
+#define SPI_OVR_FLAG             (SPI_SR_OVR_Msk << SPI_SR_OVR_Pos)   // Overrun flag
+#define SPI_BSY_FLAG             (SPI_SR_BSY_Msk << SPI_SR_BSY_Pos)   // Busy flag
+#define SPI_FRE_FLAG             (SPI_SR_FRE_Msk << SPI_SR_FRE_Pos)   // Frame format error
 
 /*
  *
