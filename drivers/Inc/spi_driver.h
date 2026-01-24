@@ -71,8 +71,8 @@ typedef struct
 /**
  * @SPI_CPOL
  */
-#define SPI_CPOL_EN		1
-#define SPI_CPOL_DIS	0
+#define SPI_CPOL_HIGH		1
+#define SPI_CPOL_LOW		0
 
 /**
  * @SPI_CPHA
@@ -83,8 +83,8 @@ typedef struct
 /**
  * @SPI_SSM
  */
-#define SPI_SSM_HW 	0
-#define SPI_SSM_SW 	1
+#define SPI_SSM_DIS 	0
+#define SPI_SSM_EN 		1
 
 /************************************************************************************
  * 							APIs supported by this driver
@@ -105,9 +105,14 @@ void SPI_Init(SPIx_Handle_t *pSPIHandle);
 void SPI_DeInint(SPIx_Type *pSPIx);
 
 /**
+ * Other Peipheral Control APIs
+ */
+void SPI_PeripheralControl(SPIx_Type* pSPIx, uint8_t EnorDis);
+
+/**
  * Data Send and Receive
  */
-void SPI_SenDatad(SPIx_Type* pSPIx, uint8_t *pTxBuff, uint32_t len);
+void SPI_SendData(SPIx_Type* pSPIx, uint8_t *pTxBuff, uint32_t len);
 
 void SPI_ReceiveData(SPIx_Type* pSPIx, uint8_t *pRxBuff, uint32_t len);
 

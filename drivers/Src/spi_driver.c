@@ -97,6 +97,9 @@ void SPI_Init(SPIx_Handle_t *pSPIHandle)
 
     pSPIHandle->pSPIx->CR1 = SPI_Reg;
 
+    // Enable SPI peripheral clock
+    SPI_PclkCtrl(pSPIHandle->pSPIx, ENABLE);
+
 }
 
 void SPI_DeInint(SPIx_Type *pSPIx)
@@ -130,6 +133,23 @@ void SPI_DeInint(SPIx_Type *pSPIx)
 	}
 }
 
+/**
+ * Other Peipheral Control APIs
+ */
+void SPI_PeripheralControl(SPIx_Type* pSPIx, uint8_t EnorDis)
+{
+    if(EnorDis == ENABLE)
+    {
+        pSPIx->CR1 |= (SPI_CR1_SPE_Msk << SPI_CR1_SPE_Pos);
+    }
+    else
+    {
+        pSPIx->CR1 &= ~(SPI_CR1_SPE_Msk << SPI_CR1_SPE_Pos);
+    }
+}
+
+
+
 uint8_t SPI_GetFlagStatus(SPIx_Type* pSPIx, uint8_t FLAG_NAME)
 {
     if(pSPIx->SR & FLAG_NAME)
@@ -142,7 +162,7 @@ uint8_t SPI_GetFlagStatus(SPIx_Type* pSPIx, uint8_t FLAG_NAME)
 /**
  * Data Send and Receive
  */
-void SPI_SenDatad(SPIx_Type* pSPIx, uint8_t *pTxBuff, uint32_t len)
+void SPI_SendData(SPIx_Type* pSPIx, uint8_t *pTxBuff, uint32_t len)
 {
     while(len > 0)
     {

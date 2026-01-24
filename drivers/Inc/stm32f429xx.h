@@ -158,8 +158,8 @@
 
 #define PERIPH_BASEADDR			0x40000000U
 #define APB1_BASEADDR			PERIPH_BASEADDR
-#define APB2_BASEADDR			(APB1_BASEADDR + 0x10000U)
-#define AHB1_BASEADDR			(APB1_BASEADDR + 0x20000U)
+#define APB2_BASEADDR			APB1_BASEADDR + 0x10000U
+#define AHB1_BASEADDR			APB1_BASEADDR + 0x20000U
 #define AHB2_BASEADDR			0x50000000U
 
 
@@ -358,7 +358,7 @@ typedef struct
  *
  */
 
-#define I2C1_PCLK_EN()		(RCC->APB1_BASEADDR |= (1 << 21))
+#define I2C1_PCLK_EN()		(RCC->APB1ENR |= (1 << 21))
 
 
 /*
@@ -366,12 +366,12 @@ typedef struct
  *
  */
 
-#define SPI1_PCLK_EN()		(RCC->APB2_BASEADDR |= (1 << 12))
-#define SPI2_PCLK_EN()		(RCC->APB1_BASEADDR |= (1 << 14))
-#define SPI3_PCLK_EN()		(RCC->APB1_BASEADDR |= (1 << 15))
-#define SPI4_PCLK_EN()		(RCC->APB2_BASEADDR |= (1 << 13))
-#define SPI5_PCLK_EN()		(RCC->APB2_BASEADDR |= (1 << 20))
-#define SPI6_PCLK_EN()		(RCC->APB2_BASEADDR |= (1 << 21))
+#define SPI1_PCLK_EN()		(RCC->APB2ENR |= (1 << 12))
+#define SPI2_PCLK_EN()		(RCC->APB1ENR |= (1 << 14))
+#define SPI3_PCLK_EN()		(RCC->APB1ENR |= (1 << 15))
+#define SPI4_PCLK_EN()		(RCC->APB2ENR |= (1 << 13))
+#define SPI5_PCLK_EN()		(RCC->APB2ENR |= (1 << 20))
+#define SPI6_PCLK_EN()		(RCC->APB2ENR |= (1 << 21))
 
 
 /*
@@ -379,22 +379,22 @@ typedef struct
  *
  */
 
-#define GPIOA_PCLK_DI()		(RCC->AHB1_BASEADDR	&= ~(1 << 0))
-#define GPIOB_PCLK_DI()		(RCC->AHB1_BASEADDR &= ~(1 << 1))
-#define GPIOC_PCLK_DI()		(RCC->AHB1_BASEADDR	&= ~(1 << 2))
-#define GPIOD_PCLK_DI()		(RCC->AHB1_BASEADDR &= ~(1 << 3))
-#define GPIOE_PCLK_DI()		(RCC->AHB1_BASEADDR	&= ~(1 << 4))
-#define GPIOF_PCLK_DI()		(RCC->AHB1_BASEADDR &= ~(1 << 5))
-#define GPIOG_PCLK_DI()		(RCC->AHB1_BASEADDR	&= ~(1 << 6))
-#define GPIOH_PCLK_DI()		(RCC->AHB1_BASEADDR &= ~(1 << 7))
-#define GPIOI_PCLK_DI()		(RCC->AHB1_BASEADDR &= ~(1 << 8))
+#define GPIOA_PCLK_DI()		(RCC->AHB1ENR	&= ~(1 << 0))
+#define GPIOB_PCLK_DI()		(RCC->AHB1ENR &= ~(1 << 1))
+#define GPIOC_PCLK_DI()		(RCC->AHB1ENR	&= ~(1 << 2))
+#define GPIOD_PCLK_DI()		(RCC->AHB1ENR &= ~(1 << 3))
+#define GPIOE_PCLK_DI()		(RCC->AHB1ENR	&= ~(1 << 4))
+#define GPIOF_PCLK_DI()		(RCC->AHB1ENR &= ~(1 << 5))
+#define GPIOG_PCLK_DI()		(RCC->AHB1ENR	&= ~(1 << 6))
+#define GPIOH_PCLK_DI()		(RCC->AHB1ENR &= ~(1 << 7))
+#define GPIOI_PCLK_DI()		(RCC->AHB1ENR &= ~(1 << 8))
 
 /*
  * clock disable macros for I2Cx peripherals
  *
  */
 
-#define I2C1_PCLK_DI()		(RCC->APB1_BASEADDR &= ~(1 << 21))
+#define I2C1_PCLK_DI()		(RCC->APB1ENR &= ~(1 << 21))
 
 
 /*
@@ -402,12 +402,12 @@ typedef struct
  *
  */
 
-#define SPI1_PCLK_DI()		(RCC->APB2_BASEADDR &= ~(1 << 12))
-#define SPI2_PCLK_DI()		(RCC->APB1_BASEADDR &= ~(1 << 14))
-#define SPI3_PCLK_DI()		(RCC->APB1_BASEADDR &= ~(1 << 15))
-#define SPI4_PCLK_DI()		(RCC->APB2_BASEADDR &= ~(1 << 13))
-#define SPI5_PCLK_DI()		(RCC->APB2_BASEADDR &= ~(1 << 20))
-#define SPI6_PCLK_DI()		(RCC->APB2_BASEADDR &= ~(1 << 21))
+#define SPI1_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 12))
+#define SPI2_PCLK_DI()		(RCC->APB1ENR &= ~(1 << 14))
+#define SPI3_PCLK_DI()		(RCC->APB1ENR &= ~(1 << 15))
+#define SPI4_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 13))
+#define SPI5_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 20))
+#define SPI6_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 21))
 
 /*
 	IRQ number of STM32F429xMCU

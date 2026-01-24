@@ -142,7 +142,8 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 		temp1 = 0; temp2 = 0; register_value = 0;
 	}
 
-
+	// Enable the peripheral clock
+	GPIO_PclkCtrl(pGPIOHandle->pGPIOx, ENABLE);
 }
 
 void GPIO_DeInint(GPIOx_Type *pGPIOx)

@@ -18,19 +18,72 @@
  */
 
 #include <stdint.h>
-#include "spi_driver.h"
-// #if !defined(__SOFT_FP__) && defined(__ARM_FP)
-//   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
-// #endif
-
+#include <string.h>
+#include "stm32f429xx.h"
 
 // SPI6_NSS   -   PG8   -   AF05
 // SPI6_MISO  -   PG12  -   AF05
 // SPI6_MOSI  -   PG14  -   AF05
 // SPI6_CLK   -   PG13  -   AF05
 
+void SPI2_GPIOInit(void)
+{
+  GPIO_Handle_t SPIPins;
+
+  SPIPins.pGPIOx = GPIOG;
+	SPIPins.GPIO_PinCFG.GPIO_PinMode      = GPIO_MODE_ALFN;
+	SPIPins.GPIO_PinCFG.GPIO_PinSpeed     = GPIO_OUTPUT_HSPEED;
+	SPIPins.GPIO_PinCFG.GPIO_PinPuPdCtrl  = GPIO_NO_PULL;
+	SPIPins.GPIO_PinCFG.GPIO_PinOPType    = GPIO_OUTPUT_PP;
+	SPIPins.GPIO_PinCFG.GPIO_PinAltMode   = 5;
+
+  // CLK Pin
+  SPIPins.GPIO_PinCFG.GPIO_PinNumber    = GPIO_PIN_NO_13;
+  GPIO_Init(&SPIPins);
+
+  // MOSI Pin
+  SPIPins.GPIO_PinCFG.GPIO_PinNumber    = GPIO_PIN_NO_14;
+  GPIO_Init(&SPIPins);
+
+  // // MISO Pin
+  // SPIPins.GPIO_PinCFG.GPIO_PinNumber    = GPIO_PIN_NO_12;
+  // GPIO_Init(&SPIPins);
+
+  // // NSS Pin
+  // SPIPins.GPIO_PinCFG.GPIO_PinNumber    = GPIO_PIN_NO_8;
+  // GPIO_Init(&SPIPins);
+
+}
+
+void SPI2_Init()
+{
+  SPIx_Handle_t SPI2Handler;
+
+  SPI2Handler.pSPIx = SPI2;
+	SPI2Handler.SPIConfig.SPI_DeviceMode  = SPI_DEVICE_MODE_MASTER;
+	SPI2Handler.SPIConfig.SPI_BusConfig   = SPI_BUS_CONFIG_FD;
+	SPI2Handler.SPIConfig.SPI_SclkSpeed   = SPI_SCLK_SPEED_DIV2;
+	SPI2Handler.SPIConfig.SPI_DFF         = SPI_DFF_8BITS;
+	SPI2Handler.SPIConfig.SPI_CPOL        = SPI_CPOL_LOW;
+	SPI2Handler.SPIConfig.SPI_CPHA        = SPI_CPHA_FIRST_CAPTURE;
+	SPI2Handler.SPIConfig.SPI_SSM         = SPI_SSM_EN;
+
+  SPI_Init(&SPI2Handler);
+}
+
 int main(void)
 {
-    /* Loop forever */
-	for(;;);
+  char user_data[] = "Hellow World!";
+
+  SPI2_GPIOInit();
+
+  SPI2_Init();
+
+  SPI_PeripheralControl(SPI2, ENABLE);
+
+  SPI_SendData(SPI2, (uint8_t *) user_data, strlen(user_data));
+
+  while(1);
+
+  return 0;
 }
