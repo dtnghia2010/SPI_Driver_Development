@@ -26,7 +26,7 @@
 // SPI6_MOSI  -   PG14  -   AF05
 // SPI6_CLK   -   PG13  -   AF05
 
-void SPI2_GPIOInit(void)
+void SPI6_GPIOInit(void)
 {
   GPIO_Handle_t SPIPins;
 
@@ -55,29 +55,29 @@ void SPI2_GPIOInit(void)
 
 }
 
-void SPI2_Init()
+void SPI6_Init()
 {
-  SPIx_Handle_t SPI2Handler;
+  SPIx_Handle_t SPI6Handler;
 
-  SPI2Handler.pSPIx = SPI6;
-	SPI2Handler.SPIConfig.SPI_DeviceMode  = SPI_DEVICE_MODE_MASTER;
-	SPI2Handler.SPIConfig.SPI_BusConfig   = SPI_BUS_CONFIG_FD;
-	SPI2Handler.SPIConfig.SPI_SclkSpeed   = SPI_SCLK_SPEED_DIV2;
-	SPI2Handler.SPIConfig.SPI_DFF         = SPI_DFF_8BITS;
-	SPI2Handler.SPIConfig.SPI_CPOL        = SPI_CPOL_LOW;
-	SPI2Handler.SPIConfig.SPI_CPHA        = SPI_CPHA_FIRST_CAPTURE;
-	SPI2Handler.SPIConfig.SPI_SSM         = SPI_SSM_EN;
+  SPI6Handler.pSPIx = SPI6;
+	SPI6Handler.SPIConfig.SPI_DeviceMode  = SPI_DEVICE_MODE_MASTER;
+	SPI6Handler.SPIConfig.SPI_BusConfig   = SPI_BUS_CONFIG_FD;
+	SPI6Handler.SPIConfig.SPI_SclkSpeed   = SPI_SCLK_SPEED_DIV2;
+	SPI6Handler.SPIConfig.SPI_DFF         = SPI_DFF_8BITS;
+	SPI6Handler.SPIConfig.SPI_CPOL        = SPI_CPOL_LOW;
+	SPI6Handler.SPIConfig.SPI_CPHA        = SPI_CPHA_FIRST_CAPTURE;
+	SPI6Handler.SPIConfig.SPI_SSM         = SPI_SSM_EN;
 
-  SPI_Init(&SPI2Handler);
+  SPI_Init(&SPI6Handler);
 }
 
 int main(void)
 {
-  char user_data[] = "Hellow World!";
+  char user_data[] = "Hello World";
 
-  SPI2_GPIOInit();
+  SPI6_GPIOInit();
 
-  SPI2_Init();
+  SPI6_Init();
 
   SPI_SSIConfig(SPI6, ENABLE);
 

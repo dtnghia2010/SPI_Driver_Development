@@ -140,15 +140,15 @@
 #define SPI_SR_FRE_Msk             (0x1U << SPI_SR_FRE_Pos)
 
 /* SPI Flags */
-#define SPI_RXNE_FLAG            (SPI_SR_RXNE_Msk << SPI_SR_RXNE_Pos)   // Receive buffer not empty
-#define SPI_TXE_FLAG             (SPI_SR_TXE_Msk << SPI_SR_TXE_Pos)   // Transmit buffer empty
-#define SPI_CHSIDE_FLAG          (SPI_SR_CHSIDE_Msk << SPI_SR_CHSIDE_Pos)   // Channel side (I2S mode)
-#define SPI_UDR_FLAG             (SPI_SR_UDR_Msk << SPI_SR_UDR_Pos)   // Underrun flag
-#define SPI_CRCERR_FLAG          (SPI_SR_CRCERR_Msk << SPI_SR_CRCERR_Pos)   // CRC error flag
-#define SPI_MODF_FLAG            (SPI_SR_MODF_Msk << SPI_SR_MODF_Pos)   // Mode fault
-#define SPI_OVR_FLAG             (SPI_SR_OVR_Msk << SPI_SR_OVR_Pos)   // Overrun flag
-#define SPI_BSY_FLAG             (SPI_SR_BSY_Msk << SPI_SR_BSY_Pos)   // Busy flag
-#define SPI_FRE_FLAG             (SPI_SR_FRE_Msk << SPI_SR_FRE_Pos)   // Frame format error
+#define SPI_RXNE_FLAG              SPI_SR_RXNE_Msk		 // Receive buffer not empty
+#define SPI_TXE_FLAG               SPI_SR_TXE_Msk		 // Transmit buffer empty
+#define SPI_CHSIDE_FLAG            SPI_SR_CHSIDE_Msk		 // Channel side (I2S mode)
+#define SPI_UDR_FLAG               SPI_SR_UDR_Msk		 // Underrun flag
+#define SPI_CRCERR_FLAG            SPI_SR_CRCERR_Msk		 // CRC error flag
+#define SPI_MODF_FLAG              SPI_SR_MODF_Msk		 // Mode fault
+#define SPI_OVR_FLAG               SPI_SR_OVR_Msk		 // Overrun flag
+#define SPI_BSY_FLAG               SPI_SR_BSY_Msk		 // Busy flag
+#define SPI_FRE_FLAG               SPI_SR_FRE_Msk		 // Frame format error
 
 /*
  *
