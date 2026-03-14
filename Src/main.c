@@ -52,6 +52,19 @@ void SPI6_GPIOInit(void)
 	// NSS - now enabled for hardware CS
 	SPIPins.GPIO_PinCFG.GPIO_PinNumber    = GPIO_PIN_NO_8;
 	GPIO_Init(&SPIPins);
+
+/**
+ * Simple analogy:
+ * Imagine someone reading morse code:
+ *
+ * * Slave device = a morse code expert who starts fresh every time they hear a beep, always in sync
+ * * Logic analyzer = a recorder that started recording late, doesn't know if it missed the first beep or not
+ *
+ * Bottom line:
+ * The slave device's dedicated SPI hardware naturally syncs to CLK from the very first pulse.
+ * The logic analyzer has no such intelligence — it needs CS to know exactly when transmission starts.
+ *
+ * */
 }
 
 void SPI6_Init(void)
