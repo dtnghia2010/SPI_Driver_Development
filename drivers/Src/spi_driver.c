@@ -108,27 +108,27 @@ void SPI_DeInint(SPIx_Type *pSPIx)
 	{
 		if(pSPIx == SPI1)
 		{
-			GPIOA_REG_RESET();
+			SPI1_REG_RESET();
 		}
 		else if (pSPIx == SPI2)
 		{
-			GPIOB_REG_RESET();
+			SPI2_REG_RESET();
 		}
 		else if (pSPIx == SPI3)
 		{
-			GPIOC_REG_RESET();
+			SPI3_REG_RESET();
 		}
 		else if (pSPIx == SPI4)
 		{
-			GPIOD_REG_RESET();
+			SPI4_REG_RESET();
 		}
 		else if (pSPIx == SPI5)
 		{
-			GPIOE_REG_RESET();
+			SPI5_REG_RESET();
 		}
 		else if (pSPIx == SPI6)
 		{
-			GPIOF_REG_RESET();
+			SPI6_REG_RESET();
 		}
 	}
 }
@@ -163,6 +163,14 @@ void SPI_SSIConfig(SPIx_Type* pSPIx, uint8_t EnorDis)
     }
 }
 
+void SPI_SSOEConfig(SPIx_Type* pSPIx, uint8_t EnorDis)
+{
+    if(EnorDis == ENABLE)
+        pSPIx->CR2 |= (1 << SPI_CR2_SSOE_Pos);
+    else
+        pSPIx->CR2 &= ~(1 << SPI_CR2_SSOE_Pos);
+}
+
 
 
 uint8_t SPI_GetFlagStatus(SPIx_Type* pSPIx, uint8_t FLAG_NAME)
@@ -190,9 +198,8 @@ void SPI_SendData(SPIx_Type* pSPIx, uint8_t *pTxBuff, uint32_t len)
             // 16 bit DFF
             //a. Load the data into the DR
             pSPIx->DR = *((uint16_t *)pTxBuff);
-            len--;
-            len--;
-            (uint16_t *)pTxBuff++;
+            len-=2;
+            pTxBuff+=2;
         }
         else
         {
@@ -203,6 +210,7 @@ void SPI_SendData(SPIx_Type* pSPIx, uint8_t *pTxBuff, uint32_t len)
             pTxBuff++;
         }
     }
+    while(SPI_GetFlagStatus(pSPIx, SPI_BSY_FLAG) == FLAG_SET);
 }
 
 void SPI_ReceiveData(SPIx_Type* pSPIx, uint8_t *pRxBuff, uint32_t len)

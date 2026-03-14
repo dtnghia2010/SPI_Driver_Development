@@ -203,7 +203,7 @@ uint8_t GPIO_ReadFromInputPin(GPIOx_Type *pGPIOx, uint8_t PinNumber)
 	return value;
 }
 
-uint8_t GPIO_ReadFromInputPort(GPIOx_Type *pGPIOx)
+uint16_t GPIO_ReadFromInputPort(GPIOx_Type *pGPIOx)
 {
 	uint16_t value;
 

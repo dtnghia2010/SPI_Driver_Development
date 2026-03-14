@@ -123,7 +123,7 @@ void GPIO_DeInint(GPIOx_Type *pGPIOx);
  */
 uint8_t GPIO_ReadFromInputPin(GPIOx_Type *pGPIOx, uint8_t PinNumber);
 
-uint8_t GPIO_ReadFromInputPort(GPIOx_Type *pGPIOx);
+uint16_t GPIO_ReadFromInputPort(GPIOx_Type *pGPIOx);
 
 /*
  * GPIO Write to Output Pin and Port

@@ -114,6 +114,7 @@ void SPI_PeripheralControl(SPIx_Type* pSPIx, uint8_t EnorDis);
  */
 void SPI_SSIConfig(SPIx_Type* pSPIx, uint8_t EnorDis);
 
+void SPI_SSOEConfig(SPIx_Type* pSPIx, uint8_t EnorDis);
 /**
  * Data Send and Receive
  */

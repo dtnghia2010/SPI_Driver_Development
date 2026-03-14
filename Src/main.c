@@ -21,71 +21,74 @@
 #include <string.h>
 #include "stm32f429xx.h"
 
-// SPI6_NSS   -   PG8   -   AF05
+// SPI6_NSS   -   PG8   -   AF05   ← now used for hardware CS
 // SPI6_MISO  -   PG12  -   AF05
 // SPI6_MOSI  -   PG14  -   AF05
 // SPI6_CLK   -   PG13  -   AF05
 
 void SPI6_GPIOInit(void)
 {
-  GPIO_Handle_t SPIPins;
+	GPIO_Handle_t SPIPins;
 
-  SPIPins.pGPIOx = GPIOG;
+	SPIPins.pGPIOx                        = GPIOG;
 	SPIPins.GPIO_PinCFG.GPIO_PinMode      = GPIO_MODE_ALFN;
 	SPIPins.GPIO_PinCFG.GPIO_PinSpeed     = GPIO_OUTPUT_HSPEED;
 	SPIPins.GPIO_PinCFG.GPIO_PinPuPdCtrl  = GPIO_NO_PULL;
 	SPIPins.GPIO_PinCFG.GPIO_PinOPType    = GPIO_OUTPUT_PP;
 	SPIPins.GPIO_PinCFG.GPIO_PinAltMode   = 5;
 
-  // CLK Pin
-  SPIPins.GPIO_PinCFG.GPIO_PinNumber    = GPIO_PIN_NO_13;
-  GPIO_Init(&SPIPins);
+	// CLK
+	SPIPins.GPIO_PinCFG.GPIO_PinNumber    = GPIO_PIN_NO_13;
+	GPIO_Init(&SPIPins);
 
-  // MOSI Pin
-  SPIPins.GPIO_PinCFG.GPIO_PinNumber    = GPIO_PIN_NO_14;
-  GPIO_Init(&SPIPins);
+	// MOSI
+	SPIPins.GPIO_PinCFG.GPIO_PinNumber    = GPIO_PIN_NO_14;
+	GPIO_Init(&SPIPins);
 
-  // // MISO Pin
-  // SPIPins.GPIO_PinCFG.GPIO_PinNumber    = GPIO_PIN_NO_12;
-  // GPIO_Init(&SPIPins);
+	// MISO
+	SPIPins.GPIO_PinCFG.GPIO_PinNumber    = GPIO_PIN_NO_12;
+	GPIO_Init(&SPIPins);
 
-  // // NSS Pin
-  // SPIPins.GPIO_PinCFG.GPIO_PinNumber    = GPIO_PIN_NO_8;
-  // GPIO_Init(&SPIPins);
-
+	// NSS - now enabled for hardware CS
+	SPIPins.GPIO_PinCFG.GPIO_PinNumber    = GPIO_PIN_NO_8;
+	GPIO_Init(&SPIPins);
 }
 
-void SPI6_Init()
+void SPI6_Init(void)
 {
-  SPIx_Handle_t SPI6Handler;
+	SPIx_Handle_t SPI6Handler;
 
-  SPI6Handler.pSPIx = SPI6;
+	SPI6Handler.pSPIx                     = SPI6;
 	SPI6Handler.SPIConfig.SPI_DeviceMode  = SPI_DEVICE_MODE_MASTER;
 	SPI6Handler.SPIConfig.SPI_BusConfig   = SPI_BUS_CONFIG_FD;
-	SPI6Handler.SPIConfig.SPI_SclkSpeed   = SPI_SCLK_SPEED_DIV2;
+	SPI6Handler.SPIConfig.SPI_SclkSpeed   = SPI_SCLK_SPEED_DIV8;
 	SPI6Handler.SPIConfig.SPI_DFF         = SPI_DFF_8BITS;
 	SPI6Handler.SPIConfig.SPI_CPOL        = SPI_CPOL_LOW;
 	SPI6Handler.SPIConfig.SPI_CPHA        = SPI_CPHA_FIRST_CAPTURE;
-	SPI6Handler.SPIConfig.SPI_SSM         = SPI_SSM_EN;
+	SPI6Handler.SPIConfig.SPI_SSM         = SPI_SSM_DIS;   // hardware NSS
 
-  SPI_Init(&SPI6Handler);
+	SPI_Init(&SPI6Handler);
 }
 
 int main(void)
 {
-  char user_data[] = "Hello World";
+	char user_data[] = "Hello World";
 
-  SPI6_GPIOInit();
+	SPI6_GPIOInit();
+	SPI6_Init();
 
-  SPI6_Init();
+	// SSOE = 1: NSS pulled low automatically when SPE=1
+	SPI_SSOEConfig(SPI6, ENABLE);
 
-  SPI_SSIConfig(SPI6, ENABLE);
+	// Enable SPI — this also pulls NSS low automatically
+	SPI_PeripheralControl(SPI6, ENABLE);
 
-  SPI_PeripheralControl(SPI6, ENABLE);
+	SPI_SendData(SPI6, (uint8_t *)user_data, strlen(user_data));
 
-  SPI_SendData(SPI6, (uint8_t *) user_data, strlen(user_data));
+	// Disable SPI — this releases NSS high automatically
+	SPI_PeripheralControl(SPI6, DISABLE);
 
-  while(1);
+	while(1);
 
-  return 0;
+	return 0;
 }
