@@ -21,6 +21,13 @@
 #include <string.h>
 #include "stm32f429xx.h"
 
+
+// delay API use for debouncing button
+void delay(void)
+{
+  for(volatile uint32_t i = 0; i < 50000; i++);
+}
+
 // SPI6_NSS   -   PG8   -   AF05   ← now used for hardware CS
 // SPI6_MISO  -   PG12  -   AF05
 // SPI6_MOSI  -   PG14  -   AF05
@@ -83,25 +90,60 @@ void SPI6_Init(void)
 	SPI_Init(&SPI6Handler);
 }
 
+void GPIO_ButtonInit(void)
+{
+	GPIO_Handle_t gpio_btn;
+
+	gpio_btn.pGPIOx = GPIOB;
+	gpio_btn.GPIO_PinCFG.GPIO_PinNumber = GPIO_PIN_NO_12;
+	gpio_btn.GPIO_PinCFG.GPIO_PinMode = GPIO_MODE_INPUT;
+	gpio_btn.GPIO_PinCFG.GPIO_PinSpeed = GPIO_OUTPUT_HSPEED;
+	gpio_btn.GPIO_PinCFG.GPIO_PinPuPdCtrl = GPIO_PULL_UP;
+
+	GPIO_PclkCtrl(GPIOB, ENABLE);
+
+  GPIO_Init(&gpio_btn);
+}
+
 int main(void)
 {
 	char user_data[] = "Hello World";
 
 	SPI6_GPIOInit();
 	SPI6_Init();
+  GPIO_ButtonInit();
 
-	// SSOE = 1: NSS pulled low automatically when SPE=1
-	SPI_SSOEConfig(SPI6, ENABLE);
+  while(1)
+  {
+    if(!(GPIO_ReadFromInputPin(GPIOB, GPIO_PIN_NO_12)))
+    {
+      delay();
 
-	// Enable SPI — this also pulls NSS low automatically
-	SPI_PeripheralControl(SPI6, ENABLE);
+      if(!(GPIO_ReadFromInputPin(GPIOB, GPIO_PIN_NO_12)))
+      {
+        // SSOE = 1: NSS pulled low automatically when SPE=1
+        SPI_SSOEConfig(SPI6, ENABLE);
 
-	SPI_SendData(SPI6, (uint8_t *)user_data, strlen(user_data));
+        // Enable SPI — this also pulls NSS low automatically
+        SPI_PeripheralControl(SPI6, ENABLE);
 
-	// Disable SPI — this releases NSS high automatically
-	SPI_PeripheralControl(SPI6, DISABLE);
+        uint8_t dataLen = strlen(user_data);
 
-	while(1);
+        SPI_SendData(SPI6, &dataLen, 1);
+
+        for(volatile uint32_t i = 0; i < 100; i++);
+
+        SPI_SendData(SPI6, (uint8_t *)user_data, strlen(user_data));
+
+        // Disable SPI — this releases NSS high automatically
+        SPI_PeripheralControl(SPI6, DISABLE);
+
+        while(!(GPIO_ReadFromInputPin(GPIOB, GPIO_PIN_NO_12)));
+
+        delay();
+      }
+    }
+  }
 
 	return 0;
 }

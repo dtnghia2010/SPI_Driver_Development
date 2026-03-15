@@ -1,88 +1,67 @@
-/* SPI Slave Demo
-
- *
- * SPI pin numbers:
- * SCK   13  // Serial Clock.
- * MISO  12  // Master In Slave Out.
- * MOSI  11  // Master Out Slave In.
- * SS    10  // Slave Select . Arduino SPI pins respond only if SS pulled low by the master
- *
-
- */
 #include <SPI.h>
-#include<stdint.h>
-#define SPI_SCK 13
-#define SPI_MISO 12
-#define SPI_MOSI 14
-#define SPI_SS 8
+#include <stdint.h>
 
 char dataBuff[500];
 
-//Initialize SPI slave.
 void SPI_SlaveInit(void)
 {
-  // Initialize SPI pins.
-  pinMode(SCK, INPUT);
-  pinMode(MOSI, INPUT);
-  pinMode(MISO, OUTPUT);
-  pinMode(SS, INPUT);
-  //make SPI as slave
-
-  // Enable SPI as slave.
-  SPCR = (1 << SPE);
+    pinMode(SCK, INPUT);
+    pinMode(MOSI, INPUT);
+    pinMode(MISO, OUTPUT);
+    pinMode(SS, INPUT);
+    SPCR = (1 << SPE);
 }
 
-//This function returns SPDR Contents
 uint8_t SPI_SlaveReceive(void)
 {
-  /* Wait for reception complete */
-  while(!(SPSR & (1<<SPIF)));
-  /* Return Data Register */
-  return SPDR;
+    while(!(SPSR & (1 << SPIF)));
+    return SPDR;
 }
 
-
-//sends one byte of data
-void SPI_SlaveTransmit(char data)
-{
-  /* Start transmission */
-  SPDR = data;
-  /* Wait for transmission complete */
-  while(!(SPSR & (1<<SPIF)));
-}
-
-
-// The setup() function runs right after reset.
 void setup()
 {
-  // Initialize serial communication
-  Serial.begin(9600);
-  // Initialize SPI Slave.
-  SPI_SlaveInit();
-  Serial.println("Slave Initialized");
+    Serial.begin(9600);
+    SPI_SlaveInit();
+    Serial.println("Slave Initialized");
 }
 
-// The loop function runs continuously after setup().
 void loop()
 {
-  uint32_t i;
-  uint16_t dataLen = 0;
-  Serial.println("Slave waiting for ss to go low");
-  while(digitalRead(SS));
+    uint8_t dataLen = 0;
+    uint32_t i = 0;
 
-  i = 0;
-  dataLen = SPI_SlaveReceive();
-  for(i = 0 ; i < dataLen ; i++ )
-  {
-    dataBuff[i] =  SPI_SlaveReceive();
-  }
+    // Wait for SS to go HIGH first (idle state)
+    // This ensures we start from a clean state
+    while(!digitalRead(SS));
 
+    Serial.println("Slave waiting for ss to go low");
 
-  //  Serial.println(String(i,HEX));
-  dataBuff[i] = '\0';
+    // Now wait for SS to go LOW (transmission starting)
+    while(digitalRead(SS));
 
-  Serial.println("Rcvd:");
-  Serial.println(dataBuff);
-  Serial.print("Length:");
-  Serial.println(dataLen);
+    // Receive length byte immediately
+    dataLen = SPI_SlaveReceive();
+
+    // Sanity check — length must be reasonable
+    if(dataLen == 0 || dataLen > 100)
+    {
+        Serial.println("Invalid length, ignoring");
+        return;
+    }
+
+    // Receive data bytes
+    for(i = 0; i < dataLen; i++)
+    {
+        dataBuff[i] = SPI_SlaveReceive();
+    }
+    dataBuff[i] = '\0';
+
+    // Wait for SS to go HIGH (transmission complete)
+    while(!digitalRead(SS));
+
+    // Only print AFTER transmission is fully complete
+    Serial.println("Rcvd:");
+    Serial.println(dataBuff);
+    Serial.print("Length: ");
+    Serial.println(dataLen);
 }
