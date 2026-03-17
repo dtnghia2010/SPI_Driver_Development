@@ -185,12 +185,40 @@ uint8_t SPI_GetFlagStatus(SPIx_Type* pSPIx, uint8_t FLAG_NAME)
 /**
  * Data Send and Receive
  */
-void SPI_SendData(SPIx_Type* pSPIx, uint8_t *pTxBuff, uint32_t len)
+void SPI_SendData(SPIx_Type* pSPIx, uint8_t *pRxBuff, uint32_t len)
 {
     while(len > 0)
     {
         // 1. Wait until TXE is set
-        while(SPI_GetFlagStatus(pSPIx, SPI_TXE_FLAG) == FLAG_RESET);
+        while(SPI_GetFlagStatus(pSPIx, SPI_RXNE_FLAG) == FLAG_RESET);
+
+        // 2. Check the DFF bit in CR1
+        if(pSPIx->CR1 & (SPI_CR1_DFF_Msk << SPI_CR1_DFF_Pos))
+        {
+            // 16 bit DFF
+            //a. Load the data into the DR
+            *((uint16_t *)pRxBuff) = pSPIx->DR;
+            len-=2;
+            pRxBuff+=2;
+        }
+        else
+        {
+            // 16 bit DFF
+            //a. Load the data into the DR
+            *((uint16_t *)pRxBuff) = pSPIx->DR;
+            len--;
+            pRxBuff++;
+        }
+    }
+    while(SPI_GetFlagStatus(pSPIx, SPI_BSY_FLAG) == FLAG_SET);
+}
+
+void SPI_ReceiveData(SPIx_Type* pSPIx, uint8_t *pRxBuff, uint32_t len)
+{
+    while(len > 0)
+    {
+        // 1. Wait until TXE is set
+        while(SPI_GetFlagStatus(pSPIx, SPI_RXE_FLAG) == FLAG_RESET);
 
         // 2. Check the DFF bit in CR1
         if(pSPIx->CR1 & (SPI_CR1_DFF_Msk << SPI_CR1_DFF_Pos))
@@ -211,10 +239,6 @@ void SPI_SendData(SPIx_Type* pSPIx, uint8_t *pTxBuff, uint32_t len)
         }
     }
     while(SPI_GetFlagStatus(pSPIx, SPI_BSY_FLAG) == FLAG_SET);
-}
-
-void SPI_ReceiveData(SPIx_Type* pSPIx, uint8_t *pRxBuff, uint32_t len)
-{
 
 }
 
